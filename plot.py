@@ -29,10 +29,10 @@ def main(argv):
             sys.exit()
         elif opt in ("-n", "--nFrames"):
             print("Setting nFrames")
-            nFrames = int(arg)
+            nFrames = int(float(arg))
         elif opt in ("-s", "--size"):
             print("Setting size")
-            size = int(arg)
+            size = int(float(arg))
         elif opt in ("-o", "--output"):
             print("Setting output")
             output = arg
