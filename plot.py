@@ -9,6 +9,16 @@ def color_function(x,y,n,t):
     value = (x/10)**2*(y/10) + (y/10)**2*(x/10)+t/n
     value = value %1 # Keep number between 0 and 1
     return value
+def write_plot(X,Y,output,nFrames,i):
+    fit,ax=plt.subplots()
+    Z = color_function(X,Y,nFrames,i)
+    plt.imshow(Z,cmap="Pastel2")
+    ax.axis('off')
+    t=time.time()
+    plotname=("%s%05d.png" %(output,i))
+    plt.savefig(plotname,dpi=300)
+    elapsed = time.time()-t
+    print("%s saved in %f s" %(plotname,elapsed))
 
 def main(argv):
     print("Entering main")
@@ -43,19 +53,10 @@ def main(argv):
     x = np.arange(size,2*size,1)
     y = np.arange(1/2*size,3.5/2*size,1)
     X,Y = np.meshgrid(x,y)
-    fit,ax=plt.subplots()
 
 
 
     for i in range(0,nFrames):
-        Z = color_function(X,Y,nFrames,i)
-        plt.imshow(Z,cmap="Pastel2")
-        ax.axis('off')
-        t=time.time()
-        plotname=("%s%05d.png" %(output,i))
-        plt.savefig(plotname,dpi=300)
-        elapsed = time.time()-t
-        print("%s saved in %f s" %(plotname,elapsed))
-        #plt.show()
+        write_plot(X,Y,output,nFrames,i)
     print("Leaving main")
 main(sys.argv[1:])
