@@ -18,6 +18,7 @@ def write_plot(X,Y,output,nFrames,i):
     plt.savefig(plotname,dpi=300)
     elapsed = time.time()-t
     print("%s saved in %f s" %(plotname,elapsed))
+    plt.close()
 
 def main(argv):
     print("Entering main")
