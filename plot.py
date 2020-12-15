@@ -46,7 +46,7 @@ def main(argv):
         elif opt in ("-o", "--output"):
             print("Setting output")
             output = arg
-            
+
 # Summarize params
     print('nFrames=%s' %nFrames)
     print('size= %s' %size)
@@ -67,4 +67,5 @@ def main(argv):
     print("   Max write time     = %1.3f s" %stats.max())
     print("   Average write time = %1.3f s" %stats.mean())
     print("   Std Dev            = %1.3f s" %stats.std())
+    print("   Number of writes   = %06d" %nFrames)
 main(sys.argv[1:])
