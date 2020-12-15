@@ -20,9 +20,9 @@ def write_plot(X,Y,output,nFrames,i):
     elapsed = time.time()-t
     print("%s saved in %f s" %(plotname,elapsed))
     plt.close()
+    return elapsed
 
 def main(argv):
-    print("Entering main")
 
     nFrames=15
     size=100
@@ -34,7 +34,6 @@ def main(argv):
         print("plot.py -n <number_of_frames> -s <array_size> -o <outfile>")
         sys.exit(2)
     for opt,arg in opts:
-        print("opt=%s, args=%s\n" %(opt,arg))
         if opt=='-h':
             print("plot.py -n <number_of_frames> -s <array_size> -o <outfile>")
             sys.exit()
@@ -47,6 +46,8 @@ def main(argv):
         elif opt in ("-o", "--output"):
             print("Setting output")
             output = arg
+            
+# Summarize params
     print('nFrames=%s' %nFrames)
     print('size= %s' %size)
     print('output_template=%s%%06d.png ' %output)
@@ -56,8 +57,14 @@ def main(argv):
     X,Y = np.meshgrid(x,y)
 
 
+    stats=np.zeros(nFrames)
 
     for i in range(0,nFrames):
-        write_plot(X,Y,output,nFrames,i)
-    print("Leaving main")
+        elapsed=write_plot(X,Y,output,nFrames,i)
+        stats[i]=elapsed
+    print("------ Summary statistics ------")
+    print("   Min write time     = %1.3f s" %stats.min())
+    print("   Max write time     = %1.3f s" %stats.max())
+    print("   Average write time = %1.3f s" %stats.mean())
+    print("   Std Dev            = %1.3f s" %stats.std())
 main(sys.argv[1:])
