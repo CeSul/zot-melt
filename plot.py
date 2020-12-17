@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 import numpy as np
 import matplotlib.pyplot as plt
-import time, sys, getopt
+import time, sys, getopt, os
 
 def color_function(x,y,n,t):
     # From mathematica:
@@ -19,8 +19,9 @@ def write_plot(X,Y,output,nFrames,i):
     plt.savefig(plotname,dpi=300)
     elapsed = time.time()-t
     print("%s saved in %f s" %(plotname,elapsed))
+    write_size=os.path.getsize(plotname)
     plt.close()
-    return elapsed
+    return [elapsed,write_size]
 
 def main(argv):
 
@@ -56,16 +57,24 @@ def main(argv):
     y = np.arange(1/2*size,3.5/2*size,1)
     X,Y = np.meshgrid(x,y)
 
-
-    stats=np.zeros(nFrames)
+    time=np.zeros(nFrames)
+    size=np.zeros(nFrames)
+    #counter=0
+    #for image in imageList:
+        #counter = counter +1
+#
+#
+    #stats=np.zeros(nFrames)
 
     for i in range(0,nFrames):
-        elapsed=write_plot(X,Y,output,nFrames,i)
-        stats[i]=elapsed
+        time[i],size[i] = write_plot(X,Y,output,nFrames,i)
+    stats=size/time /1024**2
+
     print("------ Summary statistics ------")
-    print("   Min write time     = %1.3f s" %stats.min())
-    print("   Max write time     = %1.3f s" %stats.max())
-    print("   Average write time = %1.3f s" %stats.mean())
-    print("   Std Dev            = %1.3f s" %stats.std())
-    print("   Number of writes   = %06d" %nFrames)
+    print("   Min write speed     = %1.3f MB/s" %stats.min())
+    print("   Max write speed     = %1.3f MB/s" %stats.max())
+    print("   Average write speed = %1.3f MB/s" %stats.mean())
+    print("   Std Dev             = %1.3f MB/s" %stats.std())
+    print("   Number of writes     = %06d" %nFrames)
+
 main(sys.argv[1:])
