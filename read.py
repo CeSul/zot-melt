@@ -6,7 +6,7 @@ def read_image(image):
     t=time.time()
     plt.imread(image)
     elapsed=time.time()-t
-    print("Read %s in %f s" %(image, elapsed))
+    #print("Read %s in %f s" %(image, elapsed))
     write_size=os.path.getsize(image)
     return [elapsed,write_size]
 

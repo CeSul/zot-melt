@@ -9,4 +9,5 @@ module purge
 module load usc
 module load python/3.7.6
 
-python3 plot.py
+python3 write.py
+python3 read.py
