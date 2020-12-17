@@ -53,8 +53,10 @@ def main(argv):
     print('size= %s' %size)
     print('output_template=%s%%06d.png ' %output)
 
-    x = np.arange(size,2*size,1)
-    y = np.arange(1/2*size,3.5/2*size,1)
+    x_origin=0
+    y_origin=500
+    x = np.arange(x_origin-size/2,x_origin+size/2,1)
+    y = np.arange(y_origin-size/2,y_origin+size/2,1)
     X,Y = np.meshgrid(x,y)
 
     time=np.zeros(nFrames)
