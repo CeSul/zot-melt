@@ -26,7 +26,7 @@ def write_plot(X,Y,output,nFrames,i,my_cmap):
 
 
     t=time.time()
-    plt.savefig(plotname,dpi=300)
+    plt.savefig(plotname,dpi=300,bbox_inches='tight')
     elapsed = time.time()-t
     #print("%s saved in %f s" %(plotname,elapsed))
 
@@ -81,10 +81,10 @@ def main(argv):
     stats=size/time /1024**2
 
     print("------ Summary statistics ------")
-    print("   Min write speed     = %1.3f MB/s" %stats.min())
-    print("   Max write speed     = %1.3f MB/s" %stats.max())
     print("   Average write speed = %1.3f MB/s" %stats.mean())
     print("   Std Dev             = %1.3f MB/s" %stats.std())
+    print("   Min write speed     = %1.3f MB/s" %stats.min())
+    print("   Max write speed     = %1.3f MB/s" %stats.max())
     print("   Number of writes     = %06d" %nFrames)
 
 main(sys.argv[1:])

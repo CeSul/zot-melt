@@ -42,10 +42,10 @@ def main(argv):
     stats=size/time /1024**2
 
     print("------ Summary statistics ------")
-    print("   Min read speed     = %1.3f MB/s" %stats.min())
-    print("   Max read speed     = %1.3f MB/s" %stats.max())
     print("   Average read speed = %1.3f MB/s" %stats.mean())
     print("   Std Dev             = %1.3f MB/s" %stats.std())
+    print("   Min read speed     = %1.3f MB/s" %stats.min())
+    print("   Max read speed     = %1.3f MB/s" %stats.max())
     print("   Number of reads     = %06d" %counter)
 
 main(sys.argv[1:])
