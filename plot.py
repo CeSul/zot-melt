@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import time, sys, getopt, os
 
@@ -9,18 +10,29 @@ def color_function(x,y,n,t):
     value = (x/10)**2*(y/10) + (y/10)**2*(x/10)+t/n
     value = value %1 # Keep number between 0 and 1
     return value
-def write_plot(X,Y,output,nFrames,i):
-    fit,ax=plt.subplots()
+def custom_colormap(filename):
+    data=np.genfromtxt(filename,delimiter=',',dtype=None)
+    my_cmap=mpl.colors.ListedColormap(data)
+    return my_cmap
+
+
+def write_plot(X,Y,output,nFrames,i,my_cmap):
     Z = color_function(X,Y,nFrames,i)
-    plt.imshow(Z,cmap="Pastel2")
+
+    fit,ax=plt.subplots()
+    plt.imshow(Z,cmap=my_cmap)
     ax.axis('off')
-    t=time.time()
     plotname=("%s%05d.png" %(output,i))
+
+
+    t=time.time()
     plt.savefig(plotname,dpi=300)
     elapsed = time.time()-t
-    print("%s saved in %f s" %(plotname,elapsed))
-    write_size=os.path.getsize(plotname)
+    #print("%s saved in %f s" %(plotname,elapsed))
+
     plt.close()
+
+    write_size=os.path.getsize(plotname)
     return [elapsed,write_size]
 
 def main(argv):
@@ -61,15 +73,11 @@ def main(argv):
 
     time=np.zeros(nFrames)
     size=np.zeros(nFrames)
-    #counter=0
-    #for image in imageList:
-        #counter = counter +1
-#
-#
-    #stats=np.zeros(nFrames)
+
+    my_pastel=custom_colormap("colors.txt")
 
     for i in range(0,nFrames):
-        time[i],size[i] = write_plot(X,Y,output,nFrames,i)
+        time[i],size[i] = write_plot(X,Y,output,nFrames,i,my_pastel)
     stats=size/time /1024**2
 
     print("------ Summary statistics ------")
