@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import time, sys, getopt, os
 
@@ -8,18 +9,29 @@ def color_function(x,y,n,t):
     value = (x/10)**2*(y/10) + (y/10)**2*(x/10)+t/n
     value = value %1 # Keep number between 0 and 1
     return value
-def write_plot(X,Y,output,nFrames,i):
-    fit,ax=plt.subplots()
+def custom_colormap(filename):
+    data=np.genfromtxt(filename,delimiter=',',dtype=None)
+    my_cmap=mpl.colors.ListedColormap(data)
+    return my_cmap
+
+
+def write_plot(X,Y,output,nFrames,i,my_cmap):
     Z = color_function(X,Y,nFrames,i)
-    plt.imshow(Z,cmap="Pastel2")
+
+    fit,ax=plt.subplots()
+    plt.imshow(Z,cmap=my_cmap)
     ax.axis('off')
-    t=time.time()
     plotname=("%s%05d.png" %(output,i))
-    plt.savefig(plotname,dpi=300)
+
+
+    t=time.time()
+    plt.savefig(plotname,dpi=300,bbox_inches='tight')
     elapsed = time.time()-t
-    print("%s saved in %f s" %(plotname,elapsed))
-    write_size=os.path.getsize(plotname)
+    #print("%s saved in %f s" %(plotname,elapsed))
+
     plt.close()
+
+    write_size=os.path.getsize(plotname)
     return [elapsed,write_size]
 
 def main(argv):
@@ -52,28 +64,26 @@ def main(argv):
     print('size= %s' %size)
     print('output_template=%s%%06d.png ' %output)
 
-    x = np.arange(size,2*size,1)
-    y = np.arange(1/2*size,3.5/2*size,1)
+    x_origin=0
+    y_origin=500
+    x = np.arange(x_origin-size/2,x_origin+size/2,1)
+    y = np.arange(y_origin-size/2,y_origin+size/2,1)
     X,Y = np.meshgrid(x,y)
 
     time=np.zeros(nFrames)
     size=np.zeros(nFrames)
-    #counter=0
-    #for image in imageList:
-        #counter = counter +1
-#
-#
-    #stats=np.zeros(nFrames)
+
+    my_pastel=custom_colormap("colors.txt")
 
     for i in range(0,nFrames):
-        time[i],size[i] = write_plot(X,Y,output,nFrames,i)
+        time[i],size[i] = write_plot(X,Y,output,nFrames,i,my_pastel)
     stats=size/time /1024**2
 
     print("------ Summary statistics ------")
-    print("   Min write speed     = %1.3f MB/s" %stats.min())
-    print("   Max write speed     = %1.3f MB/s" %stats.max())
     print("   Average write speed = %1.3f MB/s" %stats.mean())
     print("   Std Dev             = %1.3f MB/s" %stats.std())
+    print("   Min write speed     = %1.3f MB/s" %stats.min())
+    print("   Max write speed     = %1.3f MB/s" %stats.max())
     print("   Number of writes     = %06d" %nFrames)
 
 main(sys.argv[1:])
