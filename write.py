@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 import numpy as np
 import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import time, sys, getopt, os
 
