@@ -2,6 +2,7 @@ import numpy as np
 import time, sys, getopt, re, os
 import matplotlib.pyplot as plt
 
+
 def read_image(image):
     t=time.time()
     plt.imread(image)
