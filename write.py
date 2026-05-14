@@ -21,19 +21,24 @@ def write_plot(X,Y,output,nFrames,i,my_cmap):
     Z = color_function(X,Y,nFrames,i)
 
     fit,ax=plt.subplots()
-    plt.imshow(Z,cmap=my_cmap)
+    #plt.imshow(Z,cmap=my_cmap)
     ax.axis('off')
-    plotname=("%s%05d.png" %(output,i))
+    #plotname=("%s%05d.png" %(output,i))
+    filename=("output/%s%05d" %(output,i))
 
 
-    t=time.time()
-    plt.savefig(plotname,dpi=300,bbox_inches='tight')
-    elapsed = time.time()-t
+    t=time.perf_counter()
+    #t=time.time()
+    #plt.savefig(plotname,dpi=300,bbox_inches='tight')
+    np.save(filename,Z)
+    #elapsed = time.time()-t
+    elapsed = time.perf_counter()-t
     #print("%s saved in %f s" %(plotname,elapsed))
 
     plt.close()
 
-    write_size=os.path.getsize(plotname)
+    #write_size=os.path.getsize(plotname)
+    write_size=os.path.getsize(filename+".npy")
     return [elapsed,write_size]
 
 def main(argv):
@@ -86,6 +91,6 @@ def main(argv):
     print("   Std Dev             = %1.3f MB/s" %stats.std())
     print("   Min write speed     = %1.3f MB/s" %stats.min())
     print("   Max write speed     = %1.3f MB/s" %stats.max())
-    print("   Number of writes     = %06d" %nFrames)
+    print("   Number of writes    = %06d" %nFrames)
 
 main(sys.argv[1:])
