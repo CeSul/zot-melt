@@ -11,34 +11,35 @@ def color_function(x,y,n,t):
     value = (x/10)**2*(y/10) + (y/10)**2*(x/10)+t/n
     value = value %1 # Keep number between 0 and 1
     return value
+
 def custom_colormap(filename):
     data=np.genfromtxt(filename,delimiter=',',dtype=None)
     my_cmap=mpl.colors.ListedColormap(data)
     return my_cmap
 
 
-def write_plot(X,Y,output,nFrames,i,my_cmap):
+def write_plot(X,Y,output,nFrames,i,shouldPlot):
+    my_cmap=custom_colormap("colors.txt")
     Z = color_function(X,Y,nFrames,i)
+    if shouldPlot:
+        fit,ax=plt.subplots()
+        plt.imshow(Z,cmap=my_cmap)
+        ax.axis('off')
+        plotname=("output/%s%05d.png" %(output,i))
+        t=time.perf_counter()
+        plt.savefig(plotname,dpi=300,bbox_inches='tight')
+        elapsed = time.perf_counter()-t
+        plt.close()
+        write_size=os.path.getsize(plotname)
+    else:
 
-    fit,ax=plt.subplots()
-    #plt.imshow(Z,cmap=my_cmap)
-    ax.axis('off')
-    #plotname=("%s%05d.png" %(output,i))
-    filename=("output/%s%05d" %(output,i))
+        filename=("output/%s%05d.npy" %(output,i))
+        t=time.perf_counter()
+        np.save(filename,Z)
+        elapsed = time.perf_counter()-t
+        write_size=os.path.getsize(filename)
 
 
-    t=time.perf_counter()
-    #t=time.time()
-    #plt.savefig(plotname,dpi=300,bbox_inches='tight')
-    np.save(filename,Z)
-    #elapsed = time.time()-t
-    elapsed = time.perf_counter()-t
-    #print("%s saved in %f s" %(plotname,elapsed))
-
-    plt.close()
-
-    #write_size=os.path.getsize(plotname)
-    write_size=os.path.getsize(filename+".npy")
     return [elapsed,write_size]
 
 def main(argv):
@@ -46,11 +47,12 @@ def main(argv):
     nFrames=15
     size=100
     output="plot"
+    shouldPlot=False
 
     try:
-        opts,args=getopt.getopt(argv,"hn:s:0:",["nFrames=","size=", "output="])
+        opts,args=getopt.getopt(argv,"hpn:s:0:",["nFrames=","size=", "output="])
     except getopt.GetoptError:
-        print("plot.py -n <number_of_frames> -s <array_size> -o <outfile>")
+        print("plot.py -n <number_of_frames> -s <array_size> -o <outfile> [-p]")
         sys.exit(2)
     for opt,arg in opts:
         if opt=='-h':
@@ -62,6 +64,9 @@ def main(argv):
         elif opt in ("-s", "--size"):
             print("Setting size")
             size = int(float(arg))
+        elif opt in ("-p", "--plot"):
+            print("Enable plots")
+            shouldPlot=True
         elif opt in ("-o", "--output"):
             print("Setting output")
             output = arg
@@ -80,10 +85,10 @@ def main(argv):
     time=np.zeros(nFrames)
     size=np.zeros(nFrames)
 
-    my_pastel=custom_colormap("colors.txt")
+    os.makedirs("output",exist_ok=True)
 
     for i in range(0,nFrames):
-        time[i],size[i] = write_plot(X,Y,output,nFrames,i,my_pastel)
+        time[i],size[i] = write_plot(X,Y,output,nFrames,i,shouldPlot)
     stats=size/time /1024**2
 
     print("------ Summary statistics ------")
